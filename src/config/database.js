@@ -1,8 +1,6 @@
-// src/config/database.js
-import dotenv from 'dotenv';
 import { Sequelize } from 'sequelize';
-
-dotenv.config();          // substitui o require('dotenv').config()
+import dotenv from 'dotenv';
+dotenv.config();
 
 const sequelize = new Sequelize(
   process.env.DB_NAME,
@@ -12,7 +10,7 @@ const sequelize = new Sequelize(
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
     dialect: 'mysql',
-    logging: false,
+    logging: false
   }
 );
 

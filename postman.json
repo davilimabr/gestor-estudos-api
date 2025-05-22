@@ -1,0 +1,308 @@
+{
+  "info": {
+    "name": "Gestor-Estudos API",
+    "_postman_id": "7f0b135b-4d29-4113-bd46-a1f50f3b9c0e",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:3000" },
+    { "key": "token_gestor", "value": "" }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      { "key": "token", "value": "{{token_gestor}}", "type": "string" }
+    ]
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/auth/register", "host": ["{{base_url}}"], "path": ["api", "auth", "register"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Admin\",\n  \"email\": \"admin@email.com\",\n  \"password\": \"1234\",\n  \"role\": \"ADMIN\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/auth/login", "host": ["{{base_url}}"], "path": ["api", "auth", "login"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@email.com\",\n  \"password\": \"1234\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  const json = pm.response.json();",
+                  "  if (json.token) {",
+                  "    pm.collectionVariables.set('token_gestor', json.token);",
+                  "    pm.environment.set('token_gestor', json.token);",
+                  "  }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+
+    
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "url": { "raw": "{{base_url}}/api/users", "host": ["{{base_url}}"], "path": ["api", "users"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Fulano\",\n  \"email\": \"fulano@email.com\",\n  \"password\": \"1234\",\n  \"role\": \"STUDENT\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        { "name": "List Users", "request": { "method": "GET", "url": "{{base_url}}/api/users" } },
+        {
+          "name": "Get User by ID",
+          "request": { "method": "GET", "url": "{{base_url}}/api/users/1" }
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PUT",
+            "url": "{{base_url}}/api/users/1",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Fulano de Tal\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        { "name": "Delete User", "request": { "method": "DELETE", "url": "{{base_url}}/api/users/1" } }
+      ]
+    },
+
+    {
+      "name": "Plans",
+      "item": [
+        {
+          "name": "Create Plan",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/plans",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Plano ENEM\",\n  \"description\": \"Estudos para o ENEM 2025\",\n  \"startDate\": \"2025-06-01\",\n  \"endDate\": \"2025-11-01\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        { "name": "List Plans", "request": { "method": "GET", "url": "{{base_url}}/api/plans" } },
+        { "name": "Get Plan by ID", "request": { "method": "GET", "url": "{{base_url}}/api/plans/1" } },
+        {
+          "name": "Update Plan",
+          "request": {
+            "method": "PUT",
+            "url": "{{base_url}}/api/plans/1",
+            "body": { "mode": "raw", "raw": "{ \"description\": \"Plano atualizado\" }", "options": { "raw": { "language": "json" } } }
+          }
+        },
+        { "name": "Delete Plan", "request": { "method": "DELETE", "url": "{{base_url}}/api/plans/1" } }
+      ]
+    },
+
+    {
+      "name": "Subjects",
+      "item": [
+        {
+          "name": "Create Subject",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/subjects",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"planId\": 1,\n  \"name\": \"Matemática\",\n  \"description\": \"Conteúdos de matemática básica\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        { "name": "List Subjects", "request": { "method": "GET", "url": "{{base_url}}/api/subjects" } },
+        { "name": "Get Subject by ID", "request": { "method": "GET", "url": "{{base_url}}/api/subjects/1" } },
+        {
+          "name": "Update Subject",
+          "request": {
+            "method": "PUT",
+            "url": "{{base_url}}/api/subjects/1",
+            "body": { "mode": "raw", "raw": "{ \"description\": \"Matemática avançada\" }", "options": { "raw": { "language": "json" } } }
+          }
+        },
+        { "name": "Delete Subject", "request": { "method": "DELETE", "url": "{{base_url}}/api/subjects/1" } }
+      ]
+    },
+
+    {
+      "name": "Topics",
+      "item": [
+        {
+          "name": "Create Topic",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/topics",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"subjectId\": 1,\n  \"name\": \"Funções\",\n  \"description\": \"Conceitos de função do 1º grau\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        { "name": "List Topics", "request": { "method": "GET", "url": "{{base_url}}/api/topics" } },
+        { "name": "Get Topic by ID", "request": { "method": "GET", "url": "{{base_url}}/api/topics/1" } },
+        {
+          "name": "Update Topic",
+          "request": {
+            "method": "PUT",
+            "url": "{{base_url}}/api/topics/1",
+            "body": { "mode": "raw", "raw": "{ \"description\": \"Funções lineares\" }", "options": { "raw": { "language": "json" } } }
+          }
+        },
+        { "name": "Delete Topic", "request": { "method": "DELETE", "url": "{{base_url}}/api/topics/1" } }
+      ]
+    },
+
+    {
+      "name": "Sessions",
+      "item": [
+        {
+          "name": "Create Session",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/sessions",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": 1,\n  \"planId\": 1,\n  \"subjectId\": 1,\n  \"topicId\": 1,\n  \"date\": \"2025-05-22\",\n  \"duration\": 90,\n  \"comments\": \"Revisão de funções\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        { "name": "List Sessions", "request": { "method": "GET", "url": "{{base_url}}/api/sessions" } },
+        { "name": "Get Session by ID", "request": { "method": "GET", "url": "{{base_url}}/api/sessions/1" } },
+        {
+          "name": "Update Session",
+          "request": {
+            "method": "PUT",
+            "url": "{{base_url}}/api/sessions/1",
+            "body": { "mode": "raw", "raw": "{ \"duration\": 120 }", "options": { "raw": { "language": "json" } } }
+          }
+        },
+        { "name": "Delete Session", "request": { "method": "DELETE", "url": "{{base_url}}/api/sessions/1" } }
+      ]
+    },
+
+    {
+      "name": "Goals",
+      "item": [
+        {
+          "name": "Create Goal",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/goals",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": 1,\n  \"title\": \"Horas de Matemática\",\n  \"description\": \"Estudar 50h de matemática até o ENEM\",\n  \"targetHours\": 50,\n  \"startDate\": \"2025-05-22\",\n  \"endDate\": \"2025-11-01\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        { "name": "List Goals", "request": { "method": "GET", "url": "{{base_url}}/api/goals" } },
+        { "name": "Get Goal by ID", "request": { "method": "GET", "url": "{{base_url}}/api/goals/1" } },
+        {
+          "name": "Update Goal",
+          "request": {
+            "method": "PUT",
+            "url": "{{base_url}}/api/goals/1",
+            "body": { "mode": "raw", "raw": "{ \"progressHours\": 10 }", "options": { "raw": { "language": "json" } } }
+          }
+        },
+        { "name": "Delete Goal", "request": { "method": "DELETE", "url": "{{base_url}}/api/goals/1" } }
+      ]
+    },
+
+    {
+      "name": "Reminders",
+      "item": [
+        {
+          "name": "Create Reminder",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/reminders",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": 1,\n  \"title\": \"Estudar Física\",\n  \"description\": \"Resolver 5 questões de cinemática\",\n  \"datetime\": \"2025-05-23T18:00:00\",\n  \"recurrence\": \"ONCE\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        { "name": "List Reminders", "request": { "method": "GET", "url": "{{base_url}}/api/reminders" } },
+        { "name": "Get Reminder by ID", "request": { "method": "GET", "url": "{{base_url}}/api/reminders/1" } },
+        {
+          "name": "Update Reminder",
+          "request": {
+            "method": "PUT",
+            "url": "{{base_url}}/api/reminders/1",
+            "body": { "mode": "raw", "raw": "{ \"recurrence\": \"DAILY\" }", "options": { "raw": { "language": "json" } } }
+          }
+        },
+        { "name": "Delete Reminder", "request": { "method": "DELETE", "url": "{{base_url}}/api/reminders/1" } }
+      ]
+    },
+
+    {
+      "name": "Parameters (ADMIN)",
+      "item": [
+        {
+          "name": "Create Parameter",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/parameters",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"key\": \"LANG\",\n  \"value\": \"pt-BR\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        { "name": "List Parameters", "request": { "method": "GET", "url": "{{base_url}}/api/parameters" } },
+        { "name": "Get Parameter by Key", "request": { "method": "GET", "url": "{{base_url}}/api/parameters/LANG" } },
+        {
+          "name": "Update Parameter",
+          "request": {
+            "method": "PUT",
+            "url": "{{base_url}}/api/parameters/LANG",
+            "body": { "mode": "raw", "raw": "{ \"value\": \"en-US\" }", "options": { "raw": { "language": "json" } } }
+          }
+        },
+        { "name": "Delete Parameter", "request": { "method": "DELETE", "url": "{{base_url}}/api/parameters/LANG" } }
+      ]
+    }
+  ]
+}

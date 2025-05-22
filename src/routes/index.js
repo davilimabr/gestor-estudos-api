@@ -1,34 +1,21 @@
-// src/routes/index.js
 import { Router } from 'express';
-import parametroRoutes from './parametro.routes.js';  
-import authRoutes from './auth.routes.js';   
+import authRoutes from './auth.routes.js';
+import generateCrudRoutes from './generateCrudRoutes.js';
+import { User, Plan, Subject, Topic, Session, Goal, Reminder, Parameter } from '../models/index.js';
 
-// Casos especiais
-import { readdirSync } from 'fs';
-import { dirname, join, basename as _basename } from 'path';
-import { fileURLToPath } from 'url';
+const api = Router();
+api.use('/auth', authRoutes);
 
-const router = Router();
+// CRUD endpoints protegidos
+[
+  generateCrudRoutes('/users', User, ['ADMIN']),
+  generateCrudRoutes('/plans', Plan, ['STUDENT', 'ADMIN']),
+  generateCrudRoutes('/subjects', Subject, ['STUDENT', 'ADMIN']),
+  generateCrudRoutes('/topics', Topic, ['STUDENT', 'ADMIN']),
+  generateCrudRoutes('/sessions', Session, ['STUDENT', 'ADMIN']),
+  generateCrudRoutes('/goals', Goal, ['STUDENT', 'ADMIN']),
+  generateCrudRoutes('/reminders', Reminder, ['STUDENT', 'ADMIN']),
+  generateCrudRoutes('/parameters', Parameter, ['ADMIN'])
+].forEach(({ path, router }) => api.use(path, router));
 
-/* ---------- rotas ---------- */
-router.use('/parametros', parametroRoutes);
-router.use('/auth', authRoutes);
-
-/* ---------- registrar modelos dinamicamente ---------- */
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const basename  = _basename(fileURLToPath(import.meta.url));
-
-// obj para reunir modelos (opcional: exporte depois se precisar)
-const db = {};
-
-for (const file of readdirSync(__dirname)) {
-  if (file !== basename && file.endsWith('.model.js')) {
-    // top-level await funciona porque estamos em "type":"module"
-    const { default: model } = await import(join(__dirname, file));
-    db[model.name] = model;
-  }
-}
-
-export default router;
-export { db };
-
+export default api;
